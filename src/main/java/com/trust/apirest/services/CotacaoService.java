@@ -72,7 +72,7 @@ public class CotacaoService {
   // }
 
   @Transactional
-  public Cotacao insertWithCliente(Long clienteId, String nomeSeguradora, LocalDate dataCotacao,
+  public Cotacao insertWithCliente(Long clienteId, Long carroId, String nomeSeguradora, LocalDate dataCotacao,
       Double valorCotacao,
       Integer maxParcelasPix, Integer maxParcelasBoleto, Integer maxParcelasCartao, Integer maxParcelasDebitoConta,
       Integer maxParcelasCartaoEspecial) {
@@ -80,8 +80,12 @@ public class CotacaoService {
     Cliente cliente = clienteRepository.findById(clienteId)
         .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + clienteId));
 
+    Carro carro = carroRepository.findById(carroId)
+        .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com ID: " + carroId));
+
     Cotacao cotacao = new Cotacao();
     cotacao.setCliente(cliente);
+    cotacao.setCarro(carro);
     cotacao.setNomeSeguradora(nomeSeguradora);
     cotacao.setDataCotacao(dataCotacao);
     cotacao.setValorCotacao(valorCotacao);

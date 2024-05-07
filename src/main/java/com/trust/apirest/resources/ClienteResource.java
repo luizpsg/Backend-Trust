@@ -224,6 +224,7 @@ public class ClienteResource {
   @PostMapping("/{clienteId}/cotacoes")
   public ResponseEntity<Cotacao> createCotacao(
       @PathVariable Long clienteId,
+      @RequestParam("carroId") Long carroId,
       @RequestParam("nomeSeguradora") String nomeSeguradora,
       @RequestParam("dataCotacao") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dataCotacao,
       @RequestParam("valorCotacao") Double valorCotacao,
@@ -236,6 +237,7 @@ public class ClienteResource {
 
     Cotacao novaCotacao = cotacaoService.insertWithCliente(
         clienteId,
+        carroId,
         nomeSeguradora,
         dataCotacao,
         valorCotacao,
