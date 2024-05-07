@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ import com.trust.apirest.services.EnderecoService;
 import jakarta.validation.Valid;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping(value = "/clientes")
 public class ClienteResource {
 
@@ -180,6 +182,45 @@ public class ClienteResource {
     return ResponseEntity.created(uri).body(savedEndereco);
   }
 
+  // @PostMapping("/{clienteId}/cotacoes")
+  // public ResponseEntity<Cotacao> createCotacao(
+  // @PathVariable Long clienteId,
+  // @RequestParam("carroId") Long carroId,
+  // @RequestParam("nomeSeguradora") String nomeSeguradora,
+  // @RequestParam("dataCotacao") @DateTimeFormat(pattern = "dd/MM/yyyy")
+  // LocalDate dataCotacao,
+  // @RequestParam("valorCotacao") Double valorCotacao,
+  // @RequestParam("arquivo") MultipartFile arquivo,
+  // @RequestParam(value = "maxParcelasPix", required = false) Optional<Integer>
+  // maxParcelasPix,
+  // @RequestParam(value = "maxParcelasBoleto", required = false)
+  // Optional<Integer> maxParcelasBoleto,
+  // @RequestParam(value = "maxParcelasCartao", required = false)
+  // Optional<Integer> maxParcelasCartao,
+  // @RequestParam(value = "maxParcelasDebitoConta", required = false)
+  // Optional<Integer> maxParcelasDebitoConta,
+  // @RequestParam(value = "maxParcelasCartaoEspecial", required = false)
+  // Optional<Integer> maxParcelasCartaoEspecial)
+  // throws IOException {
+
+  // Cotacao novaCotacao = cotacaoService.insertWithCliente(
+  // clienteId,
+  // carroId,
+  // nomeSeguradora,
+  // dataCotacao,
+  // valorCotacao,
+  // arquivo,
+  // maxParcelasPix.orElse(null),
+  // maxParcelasBoleto.orElse(null),
+  // maxParcelasCartao.orElse(null),
+  // maxParcelasDebitoConta.orElse(null),
+  // maxParcelasCartaoEspecial.orElse(null));
+
+  // URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+  // .buildAndExpand(novaCotacao.getId()).toUri();
+  // return ResponseEntity.created(uri).body(novaCotacao);
+  // }
+
   @PostMapping("/{clienteId}/cotacoes")
   public ResponseEntity<Cotacao> createCotacao(
       @PathVariable Long clienteId,
@@ -187,33 +228,29 @@ public class ClienteResource {
       @RequestParam("nomeSeguradora") String nomeSeguradora,
       @RequestParam("dataCotacao") @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDate dataCotacao,
       @RequestParam("valorCotacao") Double valorCotacao,
-      @RequestParam("arquivo") MultipartFile arquivo,
       @RequestParam(value = "maxParcelasPix", required = false) Optional<Integer> maxParcelasPix,
       @RequestParam(value = "maxParcelasBoleto", required = false) Optional<Integer> maxParcelasBoleto,
       @RequestParam(value = "maxParcelasCartao", required = false) Optional<Integer> maxParcelasCartao,
       @RequestParam(value = "maxParcelasDebitoConta", required = false) Optional<Integer> maxParcelasDebitoConta,
-      @RequestParam(value = "maxParcelasCartaoEspecial", required = false) Optional<Integer> maxParcelasCartaoEspecial
-  ) throws IOException {
-  
-      Cotacao novaCotacao = cotacaoService.insertWithCliente(
-          clienteId, 
-          carroId, 
-          nomeSeguradora, 
-          dataCotacao, 
-          valorCotacao, 
-          arquivo, 
-          maxParcelasPix.orElse(null), 
-          maxParcelasBoleto.orElse(null), 
-          maxParcelasCartao.orElse(null), 
-          maxParcelasDebitoConta.orElse(null), 
-          maxParcelasCartaoEspecial.orElse(null)
-      );
-  
-      URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-          .buildAndExpand(novaCotacao.getId()).toUri();
-      return ResponseEntity.created(uri).body(novaCotacao);
-  }
+      @RequestParam(value = "maxParcelasCartaoEspecial", required = false) Optional<Integer> maxParcelasCartaoEspecial)
+      throws IOException {
 
+    Cotacao novaCotacao = cotacaoService.insertWithCliente(
+        clienteId,
+        carroId,
+        nomeSeguradora,
+        dataCotacao,
+        valorCotacao,
+        maxParcelasPix.orElse(null),
+        maxParcelasBoleto.orElse(null),
+        maxParcelasCartao.orElse(null),
+        maxParcelasDebitoConta.orElse(null),
+        maxParcelasCartaoEspecial.orElse(null));
+
+    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+        .buildAndExpand(novaCotacao.getId()).toUri();
+    return ResponseEntity.created(uri).body(novaCotacao);
+  }
   /*
    * 
    * DELETE Mappings
@@ -257,7 +294,8 @@ public class ClienteResource {
   }
 
   @PutMapping("/{clienteId}/carros/{carroId}")
-  public ResponseEntity<Carro> updateCarro(@PathVariable Long clienteId, @PathVariable Long carroId, @RequestBody Carro obj) {
+  public ResponseEntity<Carro> updateCarro(@PathVariable Long clienteId, @PathVariable Long carroId,
+      @RequestBody Carro obj) {
     obj = carroService.update(carroId, obj);
     return ResponseEntity.ok().body(obj);
   }
@@ -279,7 +317,7 @@ public class ClienteResource {
   @PutMapping("/{clienteId}/cotacoes/{cotacaoId}/arquivo")
   public ResponseEntity<Cotacao> updateCotacaoArquivo(@PathVariable Long clienteId, @PathVariable Long cotacaoId,
       @RequestParam("arquivo") MultipartFile arquivo) throws IOException {
-    Cotacao cotacao = cotacaoService.findCotacaoByClienteIdAndCotacaoId(clienteId ,cotacaoId);
+    Cotacao cotacao = cotacaoService.findCotacaoByClienteIdAndCotacaoId(clienteId, cotacaoId);
     cotacao.setArquivoCotacao(arquivo.getBytes());
     cotacao = cotacaoService.update(cotacaoId, cotacao);
     return ResponseEntity.ok().body(cotacao);

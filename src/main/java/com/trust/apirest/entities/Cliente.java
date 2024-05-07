@@ -23,13 +23,13 @@ import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "tb_cliente")
-public class Cliente implements Serializable{
+public class Cliente implements Serializable {
   private static final long serialVersionUID = 1L;
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
+
   @NotBlank(message = "Campo nome é obrigatório")
   @Column(name = "nome")
   private String nome;

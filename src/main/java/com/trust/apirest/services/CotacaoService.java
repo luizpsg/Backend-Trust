@@ -17,7 +17,6 @@ import com.trust.apirest.repositories.CotacaoRepository;
 import com.trust.apirest.services.exceptions.DatabaseException;
 import com.trust.apirest.services.exceptions.ResourceNotFoundException;
 
-
 @Service
 public class CotacaoService {
 
@@ -39,9 +38,45 @@ public class CotacaoService {
         .orElseThrow(() -> new ResourceNotFoundException("Cotação não encontrada com ID: " + cotacaoId));
   }
 
+  // @Transactional
+  // public Cotacao insertWithCliente(Long clienteId, Long carroId, String
+  // nomeSeguradora, LocalDate dataCotacao, Double valorCotacao,
+  // MultipartFile arquivo, Integer maxParcelasPix, Integer maxParcelasBoleto,
+  // Integer maxParcelasCartao, Integer maxParcelasDebitoConta, Integer
+  // maxParcelasCartaoEspecial) throws IOException {
+  // Cliente cliente = clienteRepository.findById(clienteId)
+  // .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com
+  // ID: " + clienteId));
+
+  // Carro carro = carroRepository.findById(carroId)
+  // .orElseThrow(() -> new ResourceNotFoundException("Carro não encontrado com
+  // ID: " + carroId));
+
+  // Cotacao cotacao = new Cotacao();
+  // cotacao.setCliente(cliente);
+  // cotacao.setCarro(carro);
+  // cotacao.setNomeSeguradora(nomeSeguradora);
+  // cotacao.setDataCotacao(dataCotacao);
+  // cotacao.setValorCotacao(valorCotacao);
+  // cotacao.setMaxParcelasPix(maxParcelasPix);
+  // cotacao.setMaxParcelasBoleto(maxParcelasBoleto);
+  // cotacao.setMaxParcelasCartao(maxParcelasCartao);
+  // cotacao.setMaxParcelasDebitoConta(maxParcelasDebitoConta);
+  // cotacao.setMaxParcelasCartaoEspecial(maxParcelasCartaoEspecial);
+
+  // if (arquivo != null && !arquivo.isEmpty()) {
+  // cotacao.setArquivoCotacao(arquivo.getBytes());
+  // }
+
+  // return cotacaoRepository.save(cotacao);
+  // }
+
   @Transactional
-  public Cotacao insertWithCliente(Long clienteId, Long carroId, String nomeSeguradora, LocalDate dataCotacao, Double valorCotacao,
-      MultipartFile arquivo, Integer maxParcelasPix, Integer maxParcelasBoleto, Integer maxParcelasCartao, Integer maxParcelasDebitoConta, Integer maxParcelasCartaoEspecial) throws IOException {
+  public Cotacao insertWithCliente(Long clienteId, Long carroId, String nomeSeguradora, LocalDate dataCotacao,
+      Double valorCotacao,
+      Integer maxParcelasPix, Integer maxParcelasBoleto, Integer maxParcelasCartao, Integer maxParcelasDebitoConta,
+      Integer maxParcelasCartaoEspecial) {
+
     Cliente cliente = clienteRepository.findById(clienteId)
         .orElseThrow(() -> new ResourceNotFoundException("Cliente não encontrado com ID: " + clienteId));
 
@@ -59,10 +94,6 @@ public class CotacaoService {
     cotacao.setMaxParcelasCartao(maxParcelasCartao);
     cotacao.setMaxParcelasDebitoConta(maxParcelasDebitoConta);
     cotacao.setMaxParcelasCartaoEspecial(maxParcelasCartaoEspecial);
-
-    if (arquivo != null && !arquivo.isEmpty()) {
-      cotacao.setArquivoCotacao(arquivo.getBytes());
-    }
 
     return cotacaoRepository.save(cotacao);
   }
@@ -145,7 +176,7 @@ public class CotacaoService {
   public Cotacao updateArquivoCotacao(Long id, MultipartFile arquivo) throws IOException {
     Cotacao entity = cotacaoRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("Cotação não encontrada com ID: " + id));
-    
+
     if (arquivo != null && !arquivo.isEmpty()) {
       entity.setArquivoCotacao(arquivo.getBytes());
     } else {
