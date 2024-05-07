@@ -37,7 +37,7 @@ public class Cotacao implements Serializable {
 
   @JsonIgnore
   @Lob
-  @Column(name = "arquivo_cotacao", columnDefinition = "MEDIUMBLOB")
+  @Column(name = "arquivo_cotacao", columnDefinition = "BYTEA")
   private byte[] arquivoCotacao;
 
   @Column(name = "max_parcelas_pix")
@@ -68,7 +68,7 @@ public class Cotacao implements Serializable {
   }
 
   public Cotacao(Long id, String nomeSeguradora, LocalDate dataCotacao, Double valorCotacao, byte[] arquivoCotacao,
-      Cliente cliente, Carro carro,Integer maxParcelasPix,
+      Cliente cliente, Carro carro, Integer maxParcelasPix,
       Integer maxParcelasBoleto,
       Integer maxParcelasCartao, Integer maxParcelasDebitoConta, Integer maxParcelasCartaoEspecial) {
     this.id = id;
